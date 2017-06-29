@@ -1,5 +1,5 @@
-#Fragment Searching across the PDB using MMTF with _mmtf-fragment-search_
-A way of querying all fragments in the PDB (~32 million) for a specific property implementing the recently developed mmtf-spark library.
+# Fragment Searching across the PDB using MMTF with **mmtf-fragment-search**
+_A way of querying all fragments in the PDB (~32 million) for a specific property implementing the recently developed mmtf-spark library._
 
 ### BioJavaStructureToFragments class 
 Provides functionality for fragmenting the entire PDB based upon an arbitrary window size.
