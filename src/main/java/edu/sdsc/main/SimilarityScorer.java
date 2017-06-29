@@ -7,14 +7,14 @@ import org.biojava.nbio.structure.Group;
 
 import scala.Tuple2;
 
-public class SimilariryScorer implements PairFunction<Tuple2<String,Group[]>,String, Double> {
+public class SimilarityScorer implements PairFunction<Tuple2<String,Group[]>,String, Double> {
 	
 	private static final long serialVersionUID = -2512695129516203908L;
 	
 	private Double[] phi;
 	private Double[] psi;
 	
-	public SimilariryScorer(Double[] phi, Double[] psi) {
+	public SimilarityScorer(Double[] phi, Double[] psi) {
 		this.phi = phi;
 		this.psi = psi;
 	}

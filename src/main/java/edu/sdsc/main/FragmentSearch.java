@@ -33,9 +33,10 @@ import edu.sdsc.mmtf.spark.ml.JavaRDDToDataset;
 public class FragmentSearch {
 
 	public static void main( String[] args ) throws IOException, StructureException {
-    	
+		//Add counter for printing performance metrics
+		long start = System.nanoTime();
     	// Quick hack, the user has to take care of providing that
-    	Group[] query = (Group[]) StructureIO.getStructure("~/Downloads/5epc_fragment.pdb")
+    	Group[] query = (Group[]) StructureIO.getStructure("/Users/kyle_stiers/Desktop/serloop.pdb")
     			.getChainByIndex(0).getAtomGroups().toArray(new Group[5]);
     	
     	Double[] phi = new Double[query.length - 1];
@@ -61,6 +62,7 @@ public class FragmentSearch {
 
 
 		JavaRDD<Row> rows = MmtfReader
+				//for searching only 1, or a subset of structures 
 				//.downloadMmtfFiles(Arrays.asList("5jn5"), sc)
 				//.downloadMmtfFiles(Arrays.asList("5jn5", "5tr2", "5f9c", "5hsh"), sc)
 				.readSequenceFile(path, sc)
@@ -70,14 +72,24 @@ public class FragmentSearch {
 				.mapValues(new StructureToBioJava()) // convert to a BioJava structure
 				.flatMapToPair(new BioJavaStructureToFragments(query.length))
 				.filter(new ConsecutiveFragment())
-				.mapToPair(new SimilariryScorer(phi, psi))
+				.mapToPair(new SimilarityScorer(phi, psi))
 				.map(new ResultsDataset());
 		
 		Dataset<Row> ds = JavaRDDToDataset.getDataset(rows, "pdb","chain","resnum","score");
-		
-		ds.sort(col("score").asc()).show(100);
-		
+		ds.sort(col("score").asc()).show(1000);
+		long end = System.nanoTime();
+	    long count = MmtfReader.readSequenceFile(path, sc).count();    
+		printMetrics(count, start, end);
 		sc.close();
-		
     }
+
+	private static void printMetrics(long count, long start, long end) {
+		int cores = Runtime.getRuntime().availableProcessors();
+		String osName = System.getProperty("os.name");
+	    String osType= System.getProperty("os.arch");
+	    String osVersion= System.getProperty("os.version");
+	    String time = String.format("%.1f", (end-start)/1E9);
+	    System.out.println("\nIt took " + time + " seconds to process " + count + " PDB files on " 
+	    + cores + " cores, using " + osName + "-" + osType + ", Version " + osVersion + ". That's impressive.");
+	}
 }
