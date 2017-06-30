@@ -3,16 +3,13 @@ package edu.sdsc.main;
 import static org.apache.spark.sql.functions.col;
 
 import java.io.IOException;
-import java.util.Arrays;
-
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
-import org.biojava.nbio.structure.AminoAcid;
-import org.biojava.nbio.structure.Calc;
-import org.biojava.nbio.structure.Group;
+import org.biojava.nbio.structure.AminoAcidImpl;
+import org.biojava.nbio.structure.GroupType;
 import org.biojava.nbio.structure.StructureException;
 import org.biojava.nbio.structure.StructureIO;
 
@@ -35,20 +32,9 @@ public class FragmentSearch {
 	public static void main( String[] args ) throws IOException, StructureException {
     	
     	// Quick hack, the user has to take care of providing that
-    	Group[] query = (Group[]) StructureIO.getStructure("~/Downloads/5epc_fragment.pdb")
-    			.getChainByIndex(0).getAtomGroups().toArray(new Group[5]);
+    	AminoAcidImpl[] query = (AminoAcidImpl[]) StructureIO.getStructure("~/Downloads/5epc_fragment.pdb")
+    			.getChainByIndex(0).getAtomGroups(GroupType.AMINOACID).toArray(new AminoAcidImpl[5]);
     	
-    	Double[] phi = new Double[query.length - 1];
-    	Double[] psi = new Double[query.length - 1];
-    	
-    	for (int i = 0; i < query.length - 1; i++) {
-			
-			double phi_q = Calc.getPhi((AminoAcid) query[i], (AminoAcid) query[i + 1]);
-			double psi_q = Calc.getPsi((AminoAcid) query[i], (AminoAcid) query[i + 1]);
-			
-			phi[i] = phi_q;
-			psi[i] = psi_q;
-		}
     	
     	String path = System.getProperty("MMTF_FULL");
 		if (path == null) {
@@ -70,7 +56,7 @@ public class FragmentSearch {
 				.mapValues(new StructureToBioJava()) // convert to a BioJava structure
 				.flatMapToPair(new BioJavaStructureToFragments(query.length))
 				.filter(new ConsecutiveFragment())
-				.mapToPair(new SimilariryScorer(phi, psi))
+				.mapToPair(new SimilariryScorer(query))
 				.map(new ResultsDataset());
 		
 		Dataset<Row> ds = JavaRDDToDataset.getDataset(rows, "pdb","chain","resnum","score");
