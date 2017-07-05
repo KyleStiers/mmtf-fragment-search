@@ -36,8 +36,8 @@ public class SimilarityScorer implements PairFunction<Tuple2<String,Group[]>,Str
 				double phi_q = Math.toRadians(phi[i]);
 				double psi_q = Math.toRadians(psi[i]);
 				
-				double phi_d = Math.abs(Math.sin(phi_f) - Math.sin(phi_q));
-				double psi_d = Math.abs(Math.sin(psi_f) - Math.sin(psi_q));
+				double phi_d = Math.toDegrees(Math.abs(Math.asin(Math.sin(phi_f)) -Math.asin(Math.sin(phi_q))));
+				double psi_d = Math.toDegrees(Math.abs(Math.asin(Math.sin(psi_f)) -Math.asin(Math.sin(psi_q))));
 				
 				score += phi_d + psi_d;
 			}
@@ -45,7 +45,7 @@ public class SimilarityScorer implements PairFunction<Tuple2<String,Group[]>,Str
 			score /= (fragment.length * 2);
 			
 		} catch (Exception e) {
-			score = 1;
+			score = 100;
 		}
 				
 		return new Tuple2<String, Double>(t._1, score);
