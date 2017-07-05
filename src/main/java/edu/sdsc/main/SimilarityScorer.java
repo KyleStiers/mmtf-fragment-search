@@ -9,13 +9,13 @@ import org.biojava.nbio.structure.StructureException;
 
 import scala.Tuple2;
 
-public class SimilariryScorer implements PairFunction<Tuple2<String,Group[]>,String, Double> {
+public class SimilarityScorer implements PairFunction<Tuple2<String,Group[]>,String, Double> {
 	
 	private static final long serialVersionUID = -2512695129516203908L;
 	
 	private AminoAcidImpl[] query;
 	
-	public SimilariryScorer(AminoAcidImpl[] query) throws StructureException {
+	public SimilarityScorer(AminoAcidImpl[] query) throws StructureException {
 		this.query = query;
 	}
 
@@ -36,8 +36,8 @@ public class SimilariryScorer implements PairFunction<Tuple2<String,Group[]>,Str
 				double phi_q = Calc.getPhi(query[i], query[i + 1]);
 				double psi_q = Calc.getPsi(query[i], query[i + 1]);
 				
-				double phi_d = Math.abs(Math.sin(phi_f) - Math.sin(phi_q));
-				double psi_d = Math.abs(Math.sin(psi_f) - Math.sin(psi_q));
+				double phi_d = Math.toDegrees(Math.abs(Math.asin(Math.sin(phi_f)) -Math.asin(Math.sin(phi_q))));
+				double psi_d = Math.toDegrees(Math.abs(Math.asin(Math.sin(psi_f)) -Math.asin(Math.sin(psi_q))));
 				
 				score += phi_d + psi_d;
 			}
@@ -45,7 +45,7 @@ public class SimilariryScorer implements PairFunction<Tuple2<String,Group[]>,Str
 			score /= (fragment.length * 2);
 			
 		} catch (Exception e) {
-			score = 1;
+			score = 100;
 		}
 				
 		return new Tuple2<String, Double>(t._1, score);
