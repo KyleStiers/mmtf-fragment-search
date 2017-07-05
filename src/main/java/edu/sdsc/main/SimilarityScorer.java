@@ -2,8 +2,10 @@ package edu.sdsc.main;
 
 import org.apache.spark.api.java.function.PairFunction;
 import org.biojava.nbio.structure.AminoAcid;
+import org.biojava.nbio.structure.AminoAcidImpl;
 import org.biojava.nbio.structure.Calc;
 import org.biojava.nbio.structure.Group;
+import org.biojava.nbio.structure.StructureException;
 
 import scala.Tuple2;
 
@@ -11,12 +13,16 @@ public class SimilarityScorer implements PairFunction<Tuple2<String,Group[]>,Str
 	
 	private static final long serialVersionUID = -2512695129516203908L;
 	
-	private Double[] phi;
-	private Double[] psi;
+	private AminoAcidImpl[] query;
 	
+<<<<<<< HEAD:src/main/java/edu/sdsc/main/SimilarityScorer.java
 	public SimilarityScorer(Double[] phi, Double[] psi) {
 		this.phi = phi;
 		this.psi = psi;
+=======
+	public SimilariryScorer(AminoAcidImpl[] query) throws StructureException {
+		this.query = query;
+>>>>>>> upstream/master:src/main/java/edu/sdsc/main/SimilariryScorer.java
 	}
 
 	@Override
@@ -33,8 +39,8 @@ public class SimilarityScorer implements PairFunction<Tuple2<String,Group[]>,Str
 				double phi_f = Math.toRadians(Calc.getPhi((AminoAcid) fragment[i], (AminoAcid) fragment[i + 1]));
 				double psi_f = Math.toRadians(Calc.getPsi((AminoAcid) fragment[i], (AminoAcid) fragment[i + 1]));
 				
-				double phi_q = Math.toRadians(phi[i]);
-				double psi_q = Math.toRadians(psi[i]);
+				double phi_q = Calc.getPhi(query[i], query[i + 1]);
+				double psi_q = Calc.getPsi(query[i], query[i + 1]);
 				
 				double phi_d = Math.toDegrees(Math.abs(Math.asin(Math.sin(phi_f)) -Math.asin(Math.sin(phi_q))));
 				double psi_d = Math.toDegrees(Math.abs(Math.asin(Math.sin(psi_f)) -Math.asin(Math.sin(psi_q))));

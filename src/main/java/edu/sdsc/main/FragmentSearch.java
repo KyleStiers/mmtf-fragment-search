@@ -3,16 +3,13 @@ package edu.sdsc.main;
 import static org.apache.spark.sql.functions.col;
 
 import java.io.IOException;
-import java.util.Arrays;
-
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
-import org.biojava.nbio.structure.AminoAcid;
-import org.biojava.nbio.structure.Calc;
-import org.biojava.nbio.structure.Group;
+import org.biojava.nbio.structure.AminoAcidImpl;
+import org.biojava.nbio.structure.GroupType;
 import org.biojava.nbio.structure.StructureException;
 import org.biojava.nbio.structure.StructureIO;
 
@@ -37,20 +34,17 @@ public class FragmentSearch {
 		//Add counter for printing performance metrics
 		long start = System.nanoTime();
     	// Quick hack, the user has to take care of providing that
+<<<<<<< HEAD
     	Group[] query = (Group[]) StructureIO.getStructure("/Users/kyle_stiers/Desktop/Fragment_Search/serloop.pdb")
     			.getChainByIndex(0).getAtomGroups().toArray(new Group[5]);
     	
     	Double[] phi = new Double[query.length - 1];
     	Double[] psi = new Double[query.length - 1];
+=======
+    	AminoAcidImpl[] query = (AminoAcidImpl[]) StructureIO.getStructure("~/Downloads/5epc_fragment.pdb")
+    			.getChainByIndex(0).getAtomGroups(GroupType.AMINOACID).toArray(new AminoAcidImpl[5]);
+>>>>>>> upstream/master
     	
-    	for (int i = 0; i < query.length - 1; i++) {
-			
-			double phi_q = Calc.getPhi((AminoAcid) query[i], (AminoAcid) query[i + 1]);
-			double psi_q = Calc.getPsi((AminoAcid) query[i], (AminoAcid) query[i + 1]);
-			
-			phi[i] = phi_q;
-			psi[i] = psi_q;
-		}
     	
     	String path = System.getProperty("MMTF_FULL");
 		if (path == null) {
@@ -73,8 +67,12 @@ public class FragmentSearch {
 				.mapValues(new StructureToBioJava()) // convert to a BioJava structure
 				.flatMapToPair(new BioJavaStructureToFragments(query.length)) //fragment all of the chains remaining
 				.filter(new ConsecutiveFragment())
+<<<<<<< HEAD
 				//.filter(new ContainsSequenceRegex("[TSG].{1}S.{1}[GNP]."))
 				.mapToPair(new SimilarityScorer(phi, psi))
+=======
+				.mapToPair(new SimilariryScorer(query))
+>>>>>>> upstream/master
 				.map(new ResultsDataset());
 		
 		//Optionally filter based on regex sequence as well ? ( GXSXG ish motif) 

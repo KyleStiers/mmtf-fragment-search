@@ -1,4 +1,4 @@
-package edu.sdsc.fragment_search;
+package edu.sdsc.main;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
