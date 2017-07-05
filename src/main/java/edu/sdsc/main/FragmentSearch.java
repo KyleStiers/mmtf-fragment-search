@@ -34,16 +34,9 @@ public class FragmentSearch {
 		//Add counter for printing performance metrics
 		long start = System.nanoTime();
     	// Quick hack, the user has to take care of providing that
-<<<<<<< HEAD
-    	Group[] query = (Group[]) StructureIO.getStructure("/Users/kyle_stiers/Desktop/Fragment_Search/serloop.pdb")
-    			.getChainByIndex(0).getAtomGroups().toArray(new Group[5]);
-    	
-    	Double[] phi = new Double[query.length - 1];
-    	Double[] psi = new Double[query.length - 1];
-=======
+
     	AminoAcidImpl[] query = (AminoAcidImpl[]) StructureIO.getStructure("~/Downloads/5epc_fragment.pdb")
     			.getChainByIndex(0).getAtomGroups(GroupType.AMINOACID).toArray(new AminoAcidImpl[5]);
->>>>>>> upstream/master
     	
     	
     	String path = System.getProperty("MMTF_FULL");
@@ -67,12 +60,8 @@ public class FragmentSearch {
 				.mapValues(new StructureToBioJava()) // convert to a BioJava structure
 				.flatMapToPair(new BioJavaStructureToFragments(query.length)) //fragment all of the chains remaining
 				.filter(new ConsecutiveFragment())
-<<<<<<< HEAD
 				//.filter(new ContainsSequenceRegex("[TSG].{1}S.{1}[GNP]."))
-				.mapToPair(new SimilarityScorer(phi, psi))
-=======
-				.mapToPair(new SimilariryScorer(query))
->>>>>>> upstream/master
+				.mapToPair(new SimilarityScorer(query))
 				.map(new ResultsDataset());
 		
 		//Optionally filter based on regex sequence as well ? ( GXSXG ish motif) 

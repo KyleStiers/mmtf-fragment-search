@@ -15,14 +15,8 @@ public class SimilarityScorer implements PairFunction<Tuple2<String,Group[]>,Str
 	
 	private AminoAcidImpl[] query;
 	
-<<<<<<< HEAD:src/main/java/edu/sdsc/main/SimilarityScorer.java
-	public SimilarityScorer(Double[] phi, Double[] psi) {
-		this.phi = phi;
-		this.psi = psi;
-=======
-	public SimilariryScorer(AminoAcidImpl[] query) throws StructureException {
+	public SimilarityScorer(AminoAcidImpl[] query) throws StructureException {
 		this.query = query;
->>>>>>> upstream/master:src/main/java/edu/sdsc/main/SimilariryScorer.java
 	}
 
 	@Override
