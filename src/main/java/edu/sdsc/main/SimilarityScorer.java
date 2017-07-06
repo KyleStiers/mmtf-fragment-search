@@ -2,7 +2,6 @@ package edu.sdsc.main;
 
 import org.apache.spark.api.java.function.PairFunction;
 import org.biojava.nbio.structure.AminoAcid;
-import org.biojava.nbio.structure.AminoAcidImpl;
 import org.biojava.nbio.structure.Calc;
 import org.biojava.nbio.structure.Group;
 import org.biojava.nbio.structure.StructureException;
@@ -13,9 +12,9 @@ public class SimilarityScorer implements PairFunction<Tuple2<String,Group[]>,Str
 	
 	private static final long serialVersionUID = -2512695129516203908L;
 	
-	private AminoAcidImpl[] query;
+	private AminoAcid[] query;
 	
-	public SimilarityScorer(AminoAcidImpl[] query) throws StructureException {
+	public SimilarityScorer(AminoAcid[] query) throws StructureException {
 		this.query = query;
 	}
 
