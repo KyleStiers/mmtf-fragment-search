@@ -8,13 +8,13 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
-import org.biojava.nbio.structure.AminoAcidImpl;
+import org.biojava.nbio.structure.AminoAcid;
 import org.biojava.nbio.structure.GroupType;
+import org.biojava.nbio.structure.Structure;
 import org.biojava.nbio.structure.StructureException;
 import org.biojava.nbio.structure.StructureIO;
 
 import edu.sdsc.mmtf.spark.filters.ContainsLProteinChain;
-import edu.sdsc.mmtf.spark.filters.ContainsSequenceRegex;
 import edu.sdsc.mmtf.spark.io.MmtfReader;
 import edu.sdsc.mmtf.spark.mappers.StructureToBioJava;
 import edu.sdsc.mmtf.spark.mappers.StructureToPolymerChains;
@@ -31,13 +31,17 @@ import edu.sdsc.mmtf.spark.ml.JavaRDDToDataset;
 public class FragmentSearch {
 
 	public static void main( String[] args ) throws IOException, StructureException {
+		
 		//Add counter for printing performance metrics
 		long start = System.nanoTime();
+		
     	// Quick hack, the user has to take care of providing that
 
-    	AminoAcidImpl[] query = (AminoAcidImpl[]) StructureIO.getStructure("/Users/kyle_stiers/Desktop/Fragment_Search/serloop.pdb")
-    			.getChainByIndex(0).getAtomGroups(GroupType.AMINOACID).toArray(new AminoAcidImpl[5]);
-    	
+		Structure s = StructureIO.getStructure("~/Downloads/5epc_fragment.pdb");
+    	AminoAcid[] query = (AminoAcid[]) s.getChainByIndex(0)
+    			.getAtomGroups(GroupType.AMINOACID)
+    			.toArray(new AminoAcid[5]);
+
     	
     	String path = System.getProperty("MMTF_FULL");
 		if (path == null) {
