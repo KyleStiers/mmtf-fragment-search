@@ -35,7 +35,7 @@ public class FragmentSearch {
 		long start = System.nanoTime();
     	// Quick hack, the user has to take care of providing that
 
-    	AminoAcidImpl[] query = (AminoAcidImpl[]) StructureIO.getStructure("~/Downloads/5epc_fragment.pdb")
+    	AminoAcidImpl[] query = (AminoAcidImpl[]) StructureIO.getStructure("/Users/kyle_stiers/Desktop/Fragment_Search/serloop.pdb")
     			.getChainByIndex(0).getAtomGroups(GroupType.AMINOACID).toArray(new AminoAcidImpl[5]);
     	
     	
