@@ -19,6 +19,8 @@ public class ConsecutiveFragment implements Function<Tuple2<String, Group[]>, Bo
 			
 			if (! Calc.isConnected((AminoAcid) fragment[i], (AminoAcid) fragment[i+1]))
 				return false;
+			
+			//potentially could check regex here?
 		}
 		
 		return true;

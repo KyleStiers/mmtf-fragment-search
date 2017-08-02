@@ -3,6 +3,8 @@ package edu.sdsc.main;
 import static org.apache.spark.sql.functions.col;
 
 import java.io.IOException;
+import java.util.Arrays;
+
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -15,6 +17,7 @@ import org.biojava.nbio.structure.StructureException;
 import org.biojava.nbio.structure.StructureIO;
 
 import edu.sdsc.mmtf.spark.filters.ContainsLProteinChain;
+import edu.sdsc.mmtf.spark.filters.ContainsSequenceRegex;
 import edu.sdsc.mmtf.spark.io.MmtfReader;
 import edu.sdsc.mmtf.spark.mappers.StructureToBioJava;
 import edu.sdsc.mmtf.spark.mappers.StructureToPolymerChains;
@@ -37,7 +40,7 @@ public class FragmentSearch {
 		
     	// Quick hack, the user has to take care of providing that
 
-		Structure s = StructureIO.getStructure("~/Downloads/5epc_fragment.pdb");
+		Structure s = StructureIO.getStructure("C:\\Users\\kmskvf\\Desktop\\Fragment_search\\loop.pdb");
     	AminoAcid[] query = (AminoAcid[]) s.getChainByIndex(0)
     			.getAtomGroups(GroupType.AMINOACID)
     			.toArray(new AminoAcid[5]);
@@ -64,13 +67,10 @@ public class FragmentSearch {
 				.mapValues(new StructureToBioJava()) // convert to a BioJava structure
 				.flatMapToPair(new BioJavaStructureToFragments(query.length)) //fragment all of the chains remaining
 				.filter(new ConsecutiveFragment())
-				//.filter(new ContainsSequenceRegex("[TSG].{1}S.{1}[GNP]."))
+				//.filter(new ContainsSequenceRegex("..[STC]..")) //Optionally filter for some sequence using property regex after checking continuity (Solution 4 Basic-spark)
 				.mapToPair(new SimilarityScorer(query))
 				.map(new ResultsDataset());
-		
-		//Optionally filter based on regex sequence as well ? ( GXSXG ish motif) 
-		//.filter(new ContainsSequenceRegex("[TSG].{1}S.{1}[GNP].")); from solution 4 basic-spark
-		
+			
 		Dataset<Row> ds = JavaRDDToDataset.getDataset(rows, "pdb","chain","resnum","score");
 		ds.sort(col("score").asc()).show(1000);
 		long end = System.nanoTime();
