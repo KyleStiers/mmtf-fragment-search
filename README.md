@@ -1,4 +1,5 @@
-#MMTF Fragmnet Search
+# MMTF Fragmnet Search
+
 This program is meant to enable comprehensive querying of the PDB utilizing a fragmentation of every structure (and each chain) looking for matches based on backbone geometry - initially independent of all other properties. Under the hood the Java Apache Spark API is used in conjunction with the mmtf-spark project.
 
 Conceptually, this allows for a a strictly spatial matching of fragments that utilize similar geometry to accomplish important chemistry. 
