@@ -1,18 +1,22 @@
-# Fragment Searching across the PDB using MMTF with **mmtf-fragment-search**
-_A way of querying all fragments in the PDB (~32 million) for a specific property implementing the recently developed mmtf-spark library._
+#MMTF Fragmnet Search
+This program is meant to enable comprehensive querying of the PDB utilizing a fragmentation of every structure (and each chain) looking for matches based on backbone geometry - initially independent of all other properties. Under the hood the Java Apache Spark API is used in conjunction with the mmtf-spark project.
 
-### BioJavaStructureToFragments class 
-Provides functionality for fragmenting the entire PDB based upon an arbitrary window size.
+Conceptually, this allows for a a strictly spatial matching of fragments that utilize similar geometry to accomplish important chemistry. 
 
-### ConsecutiveFragment class
-Filters out non-consecutive peptides using Calc.isConnected from BioJava
+Window (fragment) size can be varied, and the __only required input is a PDB file of the target fragment__. The query fragment should be identical in length to the window size chosen, ideally.
 
-### SimilarityScorer class
-Calculates a very simple metric for assessing the similarity of a query fragment to the target fragment. It is calculated as the sum of differences in angles at each position in the window. *(Score of 0 is perfect)*
+Planned improvements:
+- [ ] Output results in more parsable format (CSV)
+- [ ] Make executable build
+- [ ] Add sequence motif filter (regex for fragments)
+- [ ] Add filter to only let a PDB ID occur once
 
-### ResultsDataset class
-Converts the JavaRDD to a Spark Dataset for displaying and added functionality of sorting/fetching columns
+Potential future improvements:
+- [ ] GUI
+- [ ] Automated checking of pre-fragmented HADOOP sequence files
+- [ ] Automated updating of HADOOP sequence files with additions to PDB
+- [ ] Inline creation of PML script to open results in PyMOL (currently implemented with a separate python script)
 
-### FragmentSearch class
-Main class that puts everything together, keeps performance metrics, and prints the desired number of sorted (ascending) fragment hits.
+[ExampleOutput](/example.png)
 
+Many thanks to @lafita for all his work on this project and the UCSD actively developing mmtf-spark. This software is in development and as such is provided as is, with no guarantees.
