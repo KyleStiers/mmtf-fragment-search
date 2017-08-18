@@ -10,10 +10,11 @@ __Example Output__
 ![Example output of top 1000 hits](/example.png?raw=true "Example Output")
 
 Planned improvements:
+- [ ] Improve scoring metric and add statistics that guide a threshold or cutoff
 - [ ] Output results in more parsable format (CSV)
 - [ ] Make executable build
 - [ ] Add sequence motif filter (regex for fragments)
-- [ ] Add filter to only let a PDB ID occur once
+- [x] Add filter to only let a PDB ID occur once (currently implemented in python PML generating script)
 
 Potential future improvements:
 - [ ] GUI
